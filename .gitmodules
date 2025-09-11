@@ -1,0 +1,3 @@
+[submodule "NF-MEI"]
+	path = NF-MEI
+	url = https://github.com/RVel37/NF-MEI
