@@ -1,0 +1,14 @@
+{
+    "main.bams": [
+        "../data/downsampledNA12878.bam"
+    ],
+    "main.bais": [
+        "../data/downsampledNA12878.bam.bai"
+    ]
+    "main.refGenomeBwaTar": 
+
+    "main.dockerDeepMei":
+    "main.dockerMelt":
+    "main.dockerScramble":
+
+}
