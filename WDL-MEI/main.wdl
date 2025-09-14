@@ -22,6 +22,35 @@ workflow meiAnalysis {
             bais=bais
         }
 
-        
+        call scramble.scramble {
+            input:
+            bam=bam, 
+            bai=pairBamIdxs.bai,
+            refGenomeBwaTar=refGenomeBwaTar,
+            dockerScramble=dockerScramble
+        }
+
+        call melt.melt {
+            input:
+            bam=bam, 
+            bai=pairBamIdxs.bai,
+            refGenomeBwaTar=refGenomeBwaTar,
+            dockerMelt=dockerMelt
+        }
+
+        call deepMei.deepMei {
+            input:
+            bam=bam, 
+            bai=pairBamIdxs.bai,
+            refGenomeBwaTar=refGenomeBwaTar,
+            dockerDeepMei=dockerDeepMei
+        }
+    }
+    output {
+    Array[File]? scramble_vcfs=scramble.vcf
+    Array[File]? scramble_clusters=scramble.clusters
+    Array[File]? melt_vcfs= melt.vcf
+    Array[File]? melt_logs= melt.log
+    Array[File]? deepmei_vcfs= deepMei.vcf
     }
 }

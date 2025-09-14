@@ -1,0 +1,14 @@
+{
+    "main.bams": [
+        "project-J00J2YQ49jJKz0Xq6yB4qB4x:file-J31VFYQ49jJ8fbX32zq3f9fv"
+    ],
+    "main.bais": [
+        "project-J00J2YQ49jJKz0Xq6yB4qB4x:file-J31VFYQ49jJ8fbX32zq3f9fv"
+    ]
+    
+    "main.refGenomeBwaTar": 
+
+    "main.dockerDeepMei":
+    "main.dockerMelt":
+    "main.dockerScramble":
+}
