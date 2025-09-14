@@ -17,14 +17,18 @@ task scramble {
   command <<<
 
     # unpack reference genome
-    mkdir -p refGenome
-    tar -zxvf ~{refGenomeBwaTar} -C refGenome
-    referenceFasta=$(ls refGenome/*.fa | head -n1)
+    mkdir -p ref
+    tar -zxvf ~{refGenomeBwaTar} -C ref
+    referenceFasta=$(ls ref/*.fasta | head -n1)
 
-    ### Step 1: Run clustering on the input BAM file
+    ### Step 1: create BLAST db
+    makeblastdb -in ref/"$referenceFasta" -dbtype nucl -parse_seqids -out ref/"$referenceFasta"
+    # creates basename.nhr, nin, nsq
+
+    ### Step 2: Run clustering on the input BAM file
     cluster_identifier ~{bam} > "~{basename(bam, ".bam")}.clusters.txt"
 
-    ### Step 2: Run SCRAMble.R using the clustered reads (full paths used)
+    ### Step 3: Run SCRAMble.R using the clustered reads (full paths used)
     Rscript --vanilla /scramble/cluster_analysis/bin/SCRAMble.R \
       --out-name "$(pwd)/~{basename(bam, ".bam")}" \
       --cluster-file "$(pwd)/~{basename(bam, ".bam")}.clusters.txt" \
@@ -34,7 +38,10 @@ task scramble {
       --eval-meis \
       --eval-dels
 
-    mv "~{basename(bam, ".bam")}.vcf" "~{basename(bam, ".bam")}.scramble.vcf"
+    # mv "*_MEIs.txt" "~{basename(bam, ".bam")}.MEIs.txt" 
+    # mv "*PredictedDeletions.txt" "~{basename(bam, ".bam")}.PredictedDeletions.txt"     
+    mv "~{basename(bam, ".bam")}_PredictedDeletions.txt" "~{basename(bam, ".bam")}.scramble.vcf"
+
   >>>
 
   output {

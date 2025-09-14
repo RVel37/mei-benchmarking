@@ -5,10 +5,9 @@
     "main.bais": [
         "../data/downsampledNA12878.bam.bai"
     ]
-    "main.refGenomeBwaTar": 
+    "main.refGenomeBwaTar": "../ref/"
 
-    "main.dockerDeepMei":
-    "main.dockerMelt":
-    "main.dockerScramble":
-
+    "main.dockerDeepMei":"xuxiaofeiscu/deepmei:latest"
+    "main.dockerMelt":"vanallenlab/melt:3159ce1"
+    "main.dockerScramble":"swglh/scramble:1.0"
 }

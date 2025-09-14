@@ -17,9 +17,9 @@ task deepMei {
   command <<<
 
     # unpack reference genome
-    mkdir -p refGenome
-    tar -zxvf ~{refGenomeBwaTar} -C refGenome
-    referenceFasta=$(ls refGenome/*.fa | head -n1)
+    mkdir -p ref
+    tar -zxvf ~{refGenomeBwaTar} -C ref
+    referenceFasta=$(ls ref/*.fasta | head -n1)
 
     /root/DeepMEI/DeepMEI -i ${bam} -r 38 -w \$(pwd) -o ${bam.baseName}
 
