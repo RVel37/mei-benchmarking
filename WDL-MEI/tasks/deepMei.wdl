@@ -16,12 +16,18 @@ task deepMei {
 
   command <<<
 
+    sample=~{basename(bam, ".bam")}
+
     # unpack reference genome
     mkdir -p ref
     tar -zxvf ~{refGenomeBwaTar} -C ref
     referenceFasta=$(ls ref/*.fasta | head -n1)
 
-    /root/DeepMEI/DeepMEI -i ${bam} -r 38 -w \$(pwd) -o ${bam.baseName}
+    # run deepMEI
+    /root/DeepMEI/DeepMEI -i ~{bam} -r 38 -w $(pwd) -o ${sample}
+
+    OUTDIR=$(pwd)/DeepMEI_output/${sample}
+    VCF_FILE="${OUTDIR}/${sample}.vcf"
 
     if [ -f "\$VCF_FILE" ]; then
         mv "\$VCF_FILE" "${bam.baseName}.deepmei.vcf"
@@ -36,7 +42,7 @@ task deepMei {
   }
 
   runtime {
-    docker: {dockerDeepMei}
+    docker: "${dockerDeepMei}"
         cpu: cpu
         gpu: false
         memory: "${mem}"

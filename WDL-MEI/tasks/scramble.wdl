@@ -18,7 +18,7 @@ task scramble {
 
     # unpack reference genome
     mkdir -p ref
-    tar -zxvf ~{refGenomeBwaTar} -C ref
+    tar -zxvf ~{refGenomeBwaTar} -C ref --no-same-owner
     referenceFasta=$(ls ref/*.fasta | head -n1)
 
     ### Step 1: create BLAST db
@@ -35,12 +35,11 @@ task scramble {
       --install-dir /scramble/cluster_analysis/bin \
       --mei-refs /scramble/cluster_analysis/resources/MEI_consensus_seqs.fa \
       --ref "$referenceFasta" \
-      --eval-meis \
-      --eval-dels
+      --eval-meis 
 
-    # mv "*_MEIs.txt" "~{basename(bam, ".bam")}.MEIs.txt" 
-    # mv "*PredictedDeletions.txt" "~{basename(bam, ".bam")}.PredictedDeletions.txt"     
-    mv "~{basename(bam, ".bam")}_PredictedDeletions.txt" "~{basename(bam, ".bam")}.scramble.vcf"
+    ls 
+       
+    mv "~{basename(bam, ".bam")}_MEIs.txt" "~{basename(bam, ".bam")}.scramble.vcf"
 
   >>>
 

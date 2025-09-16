@@ -16,31 +16,42 @@ task melt {
 
   command <<<
 
+    cd /MELT 
+
     # unpack reference genome
     mkdir -p ref
-    tar -zxvf ~{refGenomeBwaTar} -C ref # --no-same-owner
+    tar -zxvf ~{refGenomeBwaTar} -C ref --no-same-owner
     referenceFasta=$(ls ref/*.fasta | head -n1)
 
     # make mei reference list
-    mkdir -p reference
-cat > reference/mei_list.txt <<EOF
+    mkdir -p melt_ref
+cat > melt_ref/mei_list.txt <<EOF
 /MELT/MELTv2.0.5_patch/me_refs/Hg38/ALU_MELT.zip
 /MELT/MELTv2.0.5_patch/me_refs/Hg38/LINE1_MELT.zip
 /MELT/MELTv2.0.5_patch/me_refs/Hg38/SVA_MELT.zip
 EOF
 
-    # concat if MELT produced any VCFs
-    if compgen -G "./Comparisons/*.final_comp.vcf" > /dev/null; then
-      bcftools concat -a ./Comparisons/*.final_comp.vcf \
-        -o "~{basename(bam, ".bam")}.melt.vcf"
-    fi
+    cat melt_ref/mei_list.txt
 
-    mv "melt.log" "~{basename(bam, ".bam")}.melt.log"
+    java -jar /MELTv2.0.5_patch/MELT.jar Single \
+      -bamfile ~{bam} \
+      -h $referenceFasta \
+      -t melt_ref/mei_list.txt \
+      -w $(pwd) \
+      -n MELTv2.0.5_patch/add_bed_files/Hg38/Hg38.genes.bed \
+      -c 8 \
+    > ~{basename(bam, ".bam")}.log 
+
+    # concat if MELT produced VCFs
+    if compgen -G "./Comparisons/*.final_comp.vcf" > /dev/null; then
+        bcftools concat -a ./Comparisons/*.final_comp.vcf \
+        -o data/results/melt/~{basename(bam, ".bam")}.melt.vcf
+    fi
   >>>
 
   output {
     File? vcf = "~{basename(bam, ".bam")}.melt.vcf"
-    File log  = "~{basename(bam, ".bam")}.melt.log"
+    File log  = "~{basename(bam, ".bam")}.log"
   }
 
   runtime {
