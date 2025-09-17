@@ -1,0 +1,15 @@
+{
+    "main.bams": [
+        "dx://project-J00J2YQ49jJKz0Xq6yB4qB4x:file-J00KfJ046PKZx7xyF4Fp6v71"
+    ],
+    "main.bais": [
+        "dx://project-J00J2YQ49jJKz0Xq6yB4qB4x:file-J00KfJ046PKqJkkBQZ29f0BV"
+    ],
+    
+    "main.refGenomeBwaTar":"dx://project-J00J2YQ49jJKz0Xq6yB4qB4x:file-GJqg9Jj4fq4V3185F49Qp99Q",
+
+    "main.dockerDeepMei":"dx://project-J00J2YQ49jJKz0Xq6yB4qB4x:file-J33B26049jJ3k23YQ55yzjFJ",
+    "main.dockerMelt":"dx://project-J00J2YQ49jJKz0Xq6yB4qB4x:file-J339Py849jJ10f162GBqbzQ5",
+    "main.dockerScramble":"dx://project-J00J2YQ49jJKz0Xq6yB4qB4x:file-J339Pp049jJ421X5ZVy0YVFK",
+    "main.dockerSamtools":"dx://project-J00J2YQ49jJKz0Xq6yB4qB4x:file-J33X74849jJFVK9V4z0XgkPv"
+}
