@@ -4,12 +4,11 @@ task mobster {
     input {
         File bam
         File bai
-        File refGenomeBwaTar
         String dockerMobster
     }
 
     # dynamic instance
-    Int disk_gb = ceil( 2* (size(bam, "GiB") + size(refGenomeBwaTar, "GiB")) ) + 2
+    Int disk_gb = ceil( 2* (size(bam, "GiB"))) + 2
     String mem = "32 GB"
     Int threads = 8
     Int cpu = (threads)/2
@@ -20,37 +19,59 @@ task mobster {
         # in interactive session. reference copied variables below if
         # it doesn't work normally.
 
-        cd /mobster; mkdir -p data; cd data
-        cp ~{bam} ~{bai} .
-        # unpack reference genome
-        tar -zxvf ~{refGenomeBwaTar} -C ref --no-same-owner
-        referenceFasta=$(ls ref/*.fasta | head -n1)
+        cd /mobster
+        mkdir -p data; cp ~{bam} ~{bai} .
         
         # change 'Mobster.properties' reference file from hg19 to 38
         sed -i 's|repmask/hg19_alul1svaerv.rpmsk|repmask/alu_l1_herv_sva_other_grch38_accession_ucsc.rpmsk|' /mobster/lib/Mobster.properties
 
+        #  DEBUG: show Mobster properties that determine if fasta required
+        grep -E "REPEATMASK_FILE|MAPPING_TOOL|MOBIOME_MAPPING_CMD|REPMASK" /mobster/lib/Mobster.properties || true
+
+        # confirm the repeatmask file exists
+        grep -E "REPEATMASK_FILE" /mobster/lib/Mobster.properties -A1
+
         java -Xmx8G \
-            -cp ../target/MobileInsertions-0.2.4.1.jar \
+            -cp /mobster/target/MobileInsertions-0.2.4.1.jar \
             org.umcn.me.pairedend.Mobster \
-            -properties ../lib/Mobster.properties \
+            -properties /mobster/lib/Mobster.properties \
             -in ~{bam} \
             -sn ~{basename(bam, ".bam")} \
-            -out ~{basename(bam, ".bam")}
+            -out "data/~{basename(bam, '.bam')}"
 
-        mv /mobster/data/~{basename(bam, ".bam")*.txt ../../~{basename(bam, ".bam")}.mobster.txt # move to root and rename
+        # move text output        
+        if compgen -G "data/~{basename(bam, '.bam')}*.txt" > /dev/null; then
+            mv data/~{basename(bam, '.bam')}*.txt ~{basename(bam, '.bam')}.mobster.txt
+        fi
+    >>>
 
-        >>>
+    output {
+        File? txt = "~{basename(bam, ".bam")}.mobster.txt"
+    }
 
-        output {
-            File? txt = "~{basename(bam, ".bam")}.mobster.txt"
-        }
+    runtime {
+        docker: "${dockerMobster}"
+        cpu: cpu
+        gpu: false
+        memory: "${mem}"
+        disks: "local-disk ${disk_gb} SSD"
+    }
+}
 
-        runtime {
-            docker: "${dockerScramble}"
-            cpu: cpu
-            gpu: false
-            memory: "${mem}"
-            disks: "local-disk ${disk_gb} SSD"
-        }
+
+
+task mobVcf {
+    input {
+        File? txt
+    }
+
+    command <<<
+    java -jar /mobstertovcf/MobsterVCF-0.0.1-SNAPSHOT.jar \
+    -file ~{txt} \
+    -out ~{basename(txt, ".txt")}.vcf
+    >>>
+
+    output {
+        File? vcf = ~{basename(txt, ".txt")}.vcf
     }
 }

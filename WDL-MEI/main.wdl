@@ -4,6 +4,7 @@ import "tasks/pairBamIdxs.wdl" as pairBamIdxs
 import "tasks/scramble.wdl" as scramble
 import "tasks/melt.wdl" as melt
 import "tasks/deepMei.wdl" as deepMei
+import "tasks/mobster.wdl" as mobster
 
 workflow main {
     input {
@@ -40,20 +41,36 @@ workflow main {
             dockerMelt=dockerMelt
         }
 
-        # call deepMei.deepMei {
-        #     input:
-        #     bam=pb.paired_bam, 
-        #     bai=pb.bai,
-        #     refGenomeBwaTar=refGenomeBwaTar,
-        #     dockerDeepMei=dockerDeepMei
-        # }
+        call deepMei.deepMei {
+            input:
+            bam=pb.paired_bam, 
+            bai=pb.bai,
+            refGenomeBwaTar=refGenomeBwaTar,
+            dockerDeepMei=dockerDeepMei
+        }
+
+        call mobster.mobster as mob {
+            input:
+            bam=pb.paired_bam,
+            bai=pb.bai,
+            dockerMobster=dockerMobster
+        }
+
+        call mobster.mobVcf{
+            input:
+            txt=mob.txt
+        }
 
     }
 
-output {
-    Array[File?] scramble_vcfs = scramble.vcf
-    Array[File?] scramble_clusters = scramble.clusters
-    Array[File?] melt_vcfs = melt.vcf
-    # Array[File?] deepmei_vcfs = deepMei.deepMei.vcf
-}
+    output {
+        Array[File?] scramble_vcfs = scramble.vcf
+        Array[File?] scramble_clusters = scramble.clusters
+        Array[File?] alu_vcf = melt.alu_vcf
+        Array[File?] line1_vcf = melt.line1_vcf
+        Array[File?] sva_vcf = melt.sva_vcf
+        Array[File?] deepmei_vcfs = deepMei.deepMei.vcf
+        Array[File?] mobster_txts = mob.txt
+        Array[File?] mobster_vcfs = mob_vcf.vcf
+    }
 }
