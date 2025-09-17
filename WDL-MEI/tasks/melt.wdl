@@ -32,10 +32,10 @@ EOF
 
     java -jar /MELT/MELTv2.0.5_patch/MELT.jar Single \
       -bamfile ~{bam} \
-      -h $referenceFasta \
+      -h "$referenceFasta" \
       -t melt_ref/mei_list.txt \
       -w $(pwd) \
-      -n MELTv2.0.5_patch/add_bed_files/Hg38/Hg38.genes.bed \
+      -n /MELT/MELTv2.0.5_patch/add_bed_files/Hg38/Hg38.genes.bed \
       -c 8 \
     #> ~{basename(bam, ".bam")}.melt.log 
 
