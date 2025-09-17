@@ -56,7 +56,7 @@ EOF
 
   output {
     File? vcf = "~{basename(bam, ".bam")}.melt.vcf"
-    File log  = "~{basename(bam, ".bam")}.log"
+    File log  = "~{basename(bam, ".bam")}.melt.log"
   }
 
   runtime {
