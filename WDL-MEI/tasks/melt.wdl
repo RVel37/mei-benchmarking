@@ -16,15 +16,12 @@ task melt {
 
   command <<<
 
-    cd /MELT 
-
     # unpack reference genome
     mkdir -p ref
     tar -zxvf ~{refGenomeBwaTar} -C ref --no-same-owner
     referenceFasta=$(ls ref/*.fasta | head -n1)
 
-    
-    mkdir -p melt_ref Comparisons
+    mkdir -p melt_ref
 
 # make mei reference list 
 cat > melt_ref/mei_list.txt <<EOF
@@ -41,22 +38,19 @@ EOF
       -t melt_ref/mei_list.txt \
       -w $(pwd) \
       -n /MELT/MELTv2.0.5_patch/add_bed_files/Hg38/Hg38.genes.bed \
-      -c 8 \
-    > ~{basename(bam, ".bam")}.melt.log 
+      -c 8 
 
     echo "---ls -R ----"
     ls -R
 
     # concat if MELT produced VCFs
-    if compgen -G Comparisons/*.final_comp.vcf > /dev/null; then
-        bcftools concat -a ./Comparisons/*.final_comp.vcf \
-        -o data/results/melt/~{basename(bam, ".bam")}.melt.vcf
+    if compgen -G "*.final_comp.vcf" > /dev/null; then
+        bcftools concat -a *.final_comp.vcf -o ~{basename(bam, ".bam")}.melt.vcf
     fi
   >>>
 
   output {
     File? vcf = "~{basename(bam, ".bam")}.melt.vcf"
-    File log  = "~{basename(bam, ".bam")}.melt.log"
   }
 
   runtime {

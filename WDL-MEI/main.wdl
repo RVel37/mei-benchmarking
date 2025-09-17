@@ -54,7 +54,6 @@ output {
     Array[File?] scramble_vcfs = scramble.vcf
     Array[File?] scramble_clusters = scramble.clusters
     Array[File?] melt_vcfs = melt.vcf
-    #Array[File?] melt_logs = melt.log
     # Array[File?] deepmei_vcfs = deepMei.deepMei.vcf
 }
 }
