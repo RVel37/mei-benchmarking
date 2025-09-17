@@ -49,10 +49,10 @@ task scramble {
   }
 
   runtime {
-        docker: "${dockerScramble}"
-        cpu: cpu
-        gpu: false
-        memory: "${mem}"
-        disks: "local-disk ${disk_gb} SSD"
-    }
+    docker: "${dockerScramble}"
+    cpu: cpu
+    gpu: false
+    memory: "${mem}"
+    disks: "local-disk ${disk_gb} SSD"
+  }
 }
