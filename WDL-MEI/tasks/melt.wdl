@@ -23,8 +23,10 @@ task melt {
     tar -zxvf ~{refGenomeBwaTar} -C ref --no-same-owner
     referenceFasta=$(ls ref/*.fasta | head -n1)
 
-    # make mei reference list
-    mkdir -p melt_ref
+    
+    mkdir -p melt_ref Comparisons
+
+# make mei reference list 
 cat > melt_ref/mei_list.txt <<EOF
 /MELT/MELTv2.0.5_patch/me_refs/Hg38/ALU_MELT.zip
 /MELT/MELTv2.0.5_patch/me_refs/Hg38/LINE1_MELT.zip
@@ -40,10 +42,13 @@ EOF
       -w $(pwd) \
       -n MELTv2.0.5_patch/add_bed_files/Hg38/Hg38.genes.bed \
       -c 8 \
-    > ~{basename(bam, ".bam")}.log 
+    > ~{basename(bam, ".bam")}.melt.log 
 
+    print "---ls -R ----"
+    ls -R
+    print "-------------"
     # concat if MELT produced VCFs
-    if compgen -G "./Comparisons/*.final_comp.vcf" > /dev/null; then
+    if compgen -G Comparisons/*.final_comp.vcf > /dev/null; then
         bcftools concat -a ./Comparisons/*.final_comp.vcf \
         -o data/results/melt/~{basename(bam, ".bam")}.melt.vcf
     fi
