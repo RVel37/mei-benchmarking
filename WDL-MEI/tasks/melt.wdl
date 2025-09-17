@@ -32,7 +32,7 @@ EOF
 
     cat melt_ref/mei_list.txt
 
-    java -jar /MELTv2.0.5_patch/MELT.jar Single \
+    java -jar /MELT/MELTv2.0.5_patch/MELT.jar Single \
       -bamfile ~{bam} \
       -h "$referenceFasta" \
       -t melt_ref/mei_list.txt \
