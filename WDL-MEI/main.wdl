@@ -66,9 +66,9 @@ workflow main {
     output {
         Array[File?] scramble_vcfs = scramble.vcf
         Array[File?] scramble_clusters = scramble.clusters
-        Array[File?] alu_vcf = melt.alu_vcf
-        Array[File?] line1_vcf = melt.line1_vcf
-        Array[File?] sva_vcf = melt.sva_vcf
+        Array[File?] melt_alu_vcfs = melt.alu_vcf
+        Array[File?] melt_line1_vcfs = melt.line1_vcf
+        Array[File?] melt_sva_vcfs = melt.sva_vcf
         Array[File?] deepmei_vcfs = deepMei.deepMei.vcf
         Array[File?] mobster_txts = mob.txt
         Array[File?] mobster_vcfs = mob_vcf.vcf
