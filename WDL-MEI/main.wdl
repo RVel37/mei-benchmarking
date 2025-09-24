@@ -11,10 +11,11 @@ workflow main {
         Array[File] bams
         Array[File] bais
         File refGenomeBwaTar
+        File mobsterProperties
         String dockerSamtools
         String dockerScramble
         String dockerMelt
-        String dockerDeepMei
+        # String dockerDeepMei
         String dockerMobster
         String dockerMobVcf
     }
@@ -56,12 +57,16 @@ workflow main {
             bam=pb.paired_bam,
             bai=pb.bai,
             dockerMobster=dockerMobster
+            mobsterProperties=mobsterProperties
         }
 
-        call mobster.mobVcf{
-            input:
-            txt=mob.txt
-            dockerMobVcf=dockerMobVcf
+        # if mobster produces an output
+        if (mob.txt_exists) {
+            call mobster.mobVcf {
+                input:
+                txt=mob.txt
+                dockerMobVcf=dockerMobVcf
+            }
         }
 
     }
