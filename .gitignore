@@ -2,3 +2,4 @@ ref
 data
 *.json
 !dxinput.json
+tasks/deepMei.wdl
