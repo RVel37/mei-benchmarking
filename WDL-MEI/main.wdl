@@ -15,6 +15,8 @@ workflow main {
         String dockerScramble
         String dockerMelt
         String dockerDeepMei
+        String dockerMobster
+        String dockerMobVcf
     }
 
     scatter (input_bam in bams) {
@@ -59,6 +61,7 @@ workflow main {
         call mobster.mobVcf{
             input:
             txt=mob.txt
+            dockerMobVcf=dockerMobVcf
         }
 
     }
@@ -71,6 +74,6 @@ workflow main {
         Array[File?] melt_sva_vcfs = melt.sva_vcf
         Array[File?] deepmei_vcfs = deepMei.deepMei.vcf
         Array[File?] mobster_txts = mob.txt
-        Array[File?] mobster_vcfs = mob_vcf.vcf
+        Array[File?] mobster_vcfs = mobVcf.vcf
     }
 }

@@ -63,15 +63,16 @@ task mobster {
 task mobVcf {
     input {
         File? txt
+        String dockerMobVcf
     }
 
     command <<<
     java -jar /mobstertovcf/MobsterVCF-0.0.1-SNAPSHOT.jar \
     -file ~{txt} \
-    -out ~{basename(txt, ".txt")}.vcf
+    -out ~{basename(txt, ".txt")}.mobster.vcf
     >>>
 
     output {
-        File? vcf = ~{basename(txt, ".txt")}.vcf
+        File? vcf = "~{basename(txt, ".txt")}.mobster.vcf"
     }
 }
