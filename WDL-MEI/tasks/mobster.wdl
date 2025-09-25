@@ -16,13 +16,11 @@ task mobster {
 
     command <<<
 
-        touch txt.exists
-        # Mobster only ran correctly if inputs are in /mobster subdir
-        # in interactive session. 
+        WDL_ROOT=$PWD
 
+        # Mobster only runs correctly if inputs are in mobster subdir
         cd /mobster
         mkdir -p data; cp ~{bam} ~{bai} .
-        
 
         java -Xmx8G \
             -cp /mobster/target/MobileInsertions-0.2.4.1.jar \
@@ -34,16 +32,21 @@ task mobster {
 
         # move text output        
         if compgen -G "data/~{basename(bam, '.bam')}*.txt" > /dev/null; then
-            mv data/~{basename(bam, '.bam')}*.txt /~{basename(bam, '.bam')}.mobster.txt
-            echo true > /txt.exists
+            mv data/~{basename(bam, '.bam')}*.txt $WDL_ROOT/~{basename(bam, '.bam')}.mobster.txt
+            echo "true" > $WDL_ROOT/exists.txt
         else
-            echo false > /txt.exists
+            echo "false" > $WDL_ROOT/exists.txt
         fi
+
+        echo "DEBUG: SHOULD BE IN LANDING DIRECTORY"
+        cd $WDL_ROOT
+        ls
+
         >>>
 
     output {
         File? txt = "~{basename(bam, '.bam')}.mobster.txt"
-        Boolean txt_exists = read_boolean("txt.exists")
+        Boolean txt_exists = read_boolean("exists.txt")
     }
     
     runtime {
