@@ -24,7 +24,7 @@ task deepMei {
     referenceFasta=$(ls ref/*.fasta | head -n1)
 
     # run deepMEI
-    /root/DeepMEI/DeepMEI -i ~{bam} -r 38 -w $(pwd) -o ${sample}
+    /root/DeepMEI/DeepMEI -i ~{bam} -r ${referenceFasta} -w $(pwd) -o ${sample}
 
     OUTDIR=$(pwd)/DeepMEI_output/${sample}
     VCF_FILE="${OUTDIR}/${sample}.vcf"
