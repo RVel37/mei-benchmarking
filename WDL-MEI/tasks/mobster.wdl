@@ -59,7 +59,6 @@ task mobster {
 }
 
 
-
 task mobVcf {
     input {
         File? txt
@@ -75,11 +74,11 @@ task mobVcf {
     command <<<
     java -jar /mobstertovcf/MobsterVCF-0.0.1-SNAPSHOT.jar \
     -file ~{txt} \
-    -out ~{basename(txt, ".txt")}.mobster.vcf
+    -out ~{basename(txt, ".txt")}.vcf
     >>>
 
     output {
-        File? vcf = "~{basename(txt, ".txt")}.mobster.vcf"
+        File? vcf = "~{basename(txt, ".txt")}.vcf"
     }
 
     runtime {
