@@ -1,3 +1,4 @@
 ref
 data
 *.json
+!dxinput.json

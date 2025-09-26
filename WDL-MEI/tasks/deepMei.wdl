@@ -38,7 +38,7 @@ task deepMei {
   >>>
 
   output {
-    File? vcf = "~{basename(bam, ".bam")}.deepmei.vcf"
+    File? vcf = "~{basename(bam, ".bam")}.deepMei.vcf"
   }
 
   runtime {

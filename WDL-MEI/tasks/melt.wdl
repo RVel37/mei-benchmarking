@@ -40,17 +40,17 @@ EOF
       -n /MELT/MELTv2.0.5_patch/add_bed_files/Hg38/Hg38.genes.bed \
       -c 8 
 
-    echo "---ls -R ----"
-    ls -R
+      # rename outputs
+      mv ALU.final_comp.vcf ~{basename(bam, '.bam')}.ALU.final_comp.vcf
+      mv LINE1.final_comp.vcf ~{basename(bam, '.bam')}.LINE1.final_comp.vcf
+      mv SVA.final_comp.vcf ~{basename(bam, '.bam')}.SVA.final_comp.vcf
 
-    # concat if MELT produced VCFs
-    if compgen -G "*.final_comp.vcf" > /dev/null; then
-        bcftools concat -a *.final_comp.vcf -o ~{basename(bam, ".bam")}.melt.vcf
-    fi
   >>>
 
   output {
-    File? vcf = "~{basename(bam, ".bam")}.melt.vcf"
+    File alu_vcf = "~{basename(bam, '.bam')}.ALU.final_comp.vcf"
+    File line1_vcf = "~{basename(bam, '.bam')}.LINE1.final_comp.vcf"
+    File sva_vcf = "~{basename(bam, '.bam')}.SVA.final_comp.vcf"
   }
 
   runtime {
