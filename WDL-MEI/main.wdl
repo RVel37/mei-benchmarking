@@ -27,21 +27,6 @@ workflow main {
             dockerSamtools=dockerSamtools
         }
 
-        call scramble.scramble {
-            input:
-            bam=pb.paired_bam, 
-            bai=pb.bai,
-            refGenomeBwaTar=refGenomeBwaTar,
-            dockerScramble=dockerScramble
-        }
-
-        call melt.melt {
-            input:
-            bam=pb.paired_bam, 
-            bai=pb.bai,
-            refGenomeBwaTar=refGenomeBwaTar,
-            dockerMelt=dockerMelt
-        }
 
         call deepMei.deepMei {
             input:
@@ -51,29 +36,9 @@ workflow main {
             dockerDeepMei=dockerDeepMei
         }
 
-        call mobster.mobster as mob {
-            input:
-            bam=pb.paired_bam,
-            bai=pb.bai,
-            dockerMobster=dockerMobster
-        }
-
-        call mobster.mobVcf{
-            input:
-            txt=mob.txt
-            dockerMobVcf=dockerMobVcf
-        }
-
     }
 
     output {
-        Array[File?] scramble_vcfs = scramble.vcf
-        Array[File?] scramble_clusters = scramble.clusters
-        Array[File?] alu_vcf = melt.alu_vcf
-        Array[File?] line1_vcf = melt.line1_vcf
-        Array[File?] sva_vcf = melt.sva_vcf
         Array[File?] deepmei_vcfs = deepMei.vcf
-        Array[File?] mobster_txts = mob.txt
-        Array[File?] mobster_vcfs = mobVcf.vcf
     }
 }
