@@ -24,15 +24,15 @@ task deepMei {
     referenceFasta=$(ls ref/*.fasta | head -n1)
 
     # run deepMEI
-    /root/DeepMEI/DeepMEI -i ~{bam} -r ${referenceFasta} -w $(pwd) -o ${sample}
+    /root/DeepMEI/DeepMEI -i ~{bam} -r "$referenceFasta" -w $(pwd) -o "$sample"
 
     OUTDIR=$(pwd)/DeepMEI_output/${sample}
     VCF_FILE="${OUTDIR}/${sample}.vcf"
 
     if [ -f "\$VCF_FILE" ]; then
-        mv "\$VCF_FILE" "${bam.baseName}.deepmei.vcf"
+        mv "$VCF_FILE" "~{basename(bam, ".bam")}.deepmei.vcf"
     else
-        echo "\nNo VCF found"
+        echo "No VCF found"
     fi
 
   >>>
