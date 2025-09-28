@@ -23,6 +23,18 @@ task deepMei {
     tar -zxvf ~{refGenomeBwaTar} -C ref
     referenceFasta=$(ls ref/*.fasta | head -n1)
 
+    # DEBUG: DEEPMEI REQUIRES A .FAI AND .DICT (NOT PROVIDED IN BWA REF)
+    # create fai
+    if [ ! -f "${referenceFasta}.fai" ]; then
+        samtools faidx "$referenceFasta"
+    fi
+
+    # create dict 
+    dict="${referenceFasta%.fasta}.dict" # (% = remove last part)
+    if [ ! -f "$dict" ]; then
+        awk '{print "@SQ\tSN:"$1"\tLN:"$2}' "${referenceFasta}.fai" > "$dict"
+    fi
+
     # run deepMEI
     /root/DeepMEI/DeepMEI -i ~{bam} -r "$referenceFasta" -w $(pwd) -o "$sample"
 
@@ -34,7 +46,6 @@ task deepMei {
     else
         echo "No VCF found"
     fi
-
   >>>
 
   output {
