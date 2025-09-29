@@ -19,8 +19,9 @@ task deepMei {
     sample=~{basename(bam, ".bam")}
 
     echo "pwd for landing directory:"
-    pwd
+    WDL_ROOT=$(PWD)
 
+    cd /
     # unpack reference genome
     mkdir -p ref
     tar -zxvf ~{refGenomeBwaTar} -C ref
@@ -48,11 +49,17 @@ task deepMei {
     VCF_FILE="${OUTDIR}/${sample}.vcf"
 
     if [ -f "$VCF_FILE" ]; then
-        mv "$VCF_FILE" "~{basename(bam, ".bam")}.deepMei.vcf"
+        mv "$VCF_FILE" "$WDL_ROOT/~{basename(bam, ".bam")}.deepMei.vcf"
     else
         echo "No VCF found"
     fi
+  
+    echo "--------------LS -R ---------------------"
+    pwd 
+    ls -R
+    
   >>>
+
 
   output {
     File? vcf = "~{basename(bam, ".bam")}.deepMei.vcf"
