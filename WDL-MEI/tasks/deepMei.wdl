@@ -18,11 +18,15 @@ task deepMei {
 
     sample=~{basename(bam, ".bam")}
 
+    echo "pwd for landing directory:"
+    pwd
+
     # unpack reference genome
     mkdir -p ref
     tar -zxvf ~{refGenomeBwaTar} -C ref
     referenceFasta=$(ls ref/*.fasta | head -n1)
 
+    cd ref
     # DEBUG: DEEPMEI REQUIRES A .FAI AND .DICT (NOT PROVIDED IN BWA REF)
     # create fai
     if [ ! -f "${referenceFasta}.fai" ]; then
@@ -35,14 +39,16 @@ task deepMei {
         awk '{print "@SQ\tSN:"$1"\tLN:"$2}' "${referenceFasta}.fai" > "$dict"
     fi
 
+    ls 
+    cd ..
     # run deepMEI
     /root/DeepMEI/DeepMEI -i ~{bam} -r "$referenceFasta" -w $(pwd) -o "$sample"
 
     OUTDIR=$(pwd)/DeepMEI_output/${sample}
     VCF_FILE="${OUTDIR}/${sample}.vcf"
 
-    if [ -f "\$VCF_FILE" ]; then
-        mv "$VCF_FILE" "~{basename(bam, ".bam")}.deepmei.vcf"
+    if [ -f "$VCF_FILE" ]; then
+        mv "$VCF_FILE" "~{basename(bam, ".bam")}.deepMei.vcf"
     else
         echo "No VCF found"
     fi
