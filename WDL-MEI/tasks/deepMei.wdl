@@ -16,10 +16,23 @@ task deepMei {
 
   command <<<
 
+    bash -c '
+    export PATH="/root/miniconda3/bin:$PATH"
+
+
+    echo "[DEBUG] Which samtools? $(which samtools || echo 'not found')"
+    echo "[DEBUG] Samtools version:"
+    samtools --version 2>&1 || echo "samtools not available"
+
+    echo "[DEBUG] Conda envs (if any):"
+    conda env list 2>&1 || echo "conda not installed"
+
+    echo "[DEBUG] Python site packages:"
+    python3 -m pip list 2>&1 || echo "pip not available"
+
     sample=~{basename(bam, ".bam")}
 
-    echo "pwd for landing directory:"
-    WDL_ROOT=$(PWD)
+    WDL_ROOT=$(pwd)
 
     cd /
     # unpack reference genome
@@ -53,13 +66,9 @@ task deepMei {
     else
         echo "No VCF found"
     fi
-  
-    echo "--------------LS -R ---------------------"
-    pwd 
-    ls -R
+  '
     
   >>>
-
 
   output {
     File? vcf = "~{basename(bam, ".bam")}.deepMei.vcf"
