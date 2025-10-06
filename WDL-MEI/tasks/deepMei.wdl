@@ -27,9 +27,8 @@ task deepMei {
     # unpack reference genome
     mkdir -p ref
     tar -zxvf ~{refGenomeBwaTar} -C ref
-    referenceFasta=$(ls ref/*.fasta | head -n1)
-
     cd ref
+    referenceFasta=$(ls ref/*.fasta | head -n1)
 
     # DEEPMEI REQUIRES .FAI AND .DICT 
     # create fai
@@ -40,7 +39,7 @@ task deepMei {
     # create dict 
     dict="${referenceFasta%.fasta}.dict" # (% = remove last part)
     if [ ! -f "$dict" ]; then
-      awk '\''{printf "@SQ\tSN:%s\tLN:%s\n", $1, $2}''\' "${referenceFasta}.fai" > "$dict"
+      awk '\''{printf "@SQ\tSN:%s\tLN:%s\n", $1, $2}'\'' "${referenceFasta}.fai" > "$dict"
     fi
 
     ls # DEBUG
