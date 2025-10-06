@@ -27,7 +27,6 @@ task deepMei {
     # unpack reference genome
     mkdir -p ref
     tar -zxvf ~{refGenomeBwaTar} -C ref
-    cd ref
     referenceFasta=$(ls ref/*.fasta | head -n1)
 
     # DEEPMEI REQUIRES .FAI AND .DICT 
