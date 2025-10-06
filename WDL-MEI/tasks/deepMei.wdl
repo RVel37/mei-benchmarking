@@ -19,17 +19,6 @@ task deepMei {
     bash -c '
     export PATH="/root/miniconda3/bin:$PATH"
 
-
-    echo "[DEBUG] Which samtools? $(which samtools || echo 'not found')"
-    echo "[DEBUG] Samtools version:"
-    samtools --version 2>&1 || echo "samtools not available"
-
-    echo "[DEBUG] Conda envs (if any):"
-    conda env list 2>&1 || echo "conda not installed"
-
-    echo "[DEBUG] Python site packages:"
-    python3 -m pip list 2>&1 || echo "pip not available"
-
     sample=~{basename(bam, ".bam")}
 
     WDL_ROOT=$(pwd)
@@ -41,7 +30,8 @@ task deepMei {
     referenceFasta=$(ls ref/*.fasta | head -n1)
 
     cd ref
-    # DEBUG: DEEPMEI REQUIRES A .FAI AND .DICT (NOT PROVIDED IN BWA REF)
+
+    # DEEPMEI REQUIRES .FAI AND .DICT 
     # create fai
     if [ ! -f "${referenceFasta}.fai" ]; then
         samtools faidx "$referenceFasta"
@@ -50,13 +40,14 @@ task deepMei {
     # create dict 
     dict="${referenceFasta%.fasta}.dict" # (% = remove last part)
     if [ ! -f "$dict" ]; then
-        awk '{print "@SQ\tSN:"$1"\tLN:"$2}' "${referenceFasta}.fai" > "$dict"
+      awk '\''{printf "@SQ\tSN:%s\tLN:%s\n", $1, $2}''\' "${referenceFasta}.fai" > "$dict"
     fi
 
-    ls 
+    ls # DEBUG
+
     cd ..
     # run deepMEI
-    /root/DeepMEI/DeepMEI -i ~{bam} -r "$referenceFasta" -w $(pwd) -o "$sample"
+    /root/DeepMEI/DeepMEI -i ~{bam} -r "$referenceFasta" -w "$(pwd)" -o "$sample"
 
     OUTDIR=$(pwd)/DeepMEI_output/${sample}
     VCF_FILE="${OUTDIR}/${sample}.vcf"
@@ -67,7 +58,7 @@ task deepMei {
         echo "No VCF found"
     fi
   '
-    
+
   >>>
 
   output {
