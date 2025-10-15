@@ -15,7 +15,7 @@ workflow main {
         String dockerSamtools
         String dockerScramble
         String dockerMelt
-        # String dockerDeepMei
+        String dockerDeepMei
         String dockerMobster
         String dockerMobVcf
     }
@@ -44,13 +44,13 @@ workflow main {
             dockerMelt=dockerMelt
         }
 
-        # call deepMei.deepMei {
-        #     input:
-        #     bam=pb.paired_bam, 
-        #     bai=pb.bai,
-        #     refGenomeBwaTar=refGenomeBwaTar,
-        #     dockerDeepMei=dockerDeepMei
-        # }
+        call deepMei.deepMei {
+            input:
+            bam=pb.paired_bam, 
+            bai=pb.bai,
+            refGenomeBwaTar=refGenomeBwaTar,
+            dockerDeepMei=dockerDeepMei
+        }
 
         call mobster.mobster as mob {
             input:
@@ -77,7 +77,7 @@ workflow main {
         Array[File?] melt_alu_vcfs = melt.alu_vcf
         Array[File?] melt_line1_vcfs = melt.line1_vcf
         Array[File?] melt_sva_vcfs = melt.sva_vcf
-        # Array[File?] deepmei_vcfs = deepMei.vcf
+        Array[File?] deepmei_vcfs = deepMei.vcf
         Array[File?] mobster_txts = mob.txt
         Array[File?] mobster_vcfs = mobVcf.vcf
     }
