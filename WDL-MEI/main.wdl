@@ -1,7 +1,10 @@
 version 1.0
 
 import "tasks/pairBamIdxs.wdl" as pairBamIdxs
+import "tasks/scramble.wdl" as scramble
 import "tasks/melt.wdl" as melt
+import "tasks/deepMei.wdl" as deepMei
+import "tasks/mobster.wdl" as mobster
 
 workflow main {
     input {
