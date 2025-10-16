@@ -11,7 +11,7 @@ task mobster {
     # dynamic instance
     Int disk_gb = ceil( 2* (size(bam, "GiB"))) + 2
     String mem = "32 GB"
-    Int threads = 8
+    Int threads = 16
     Int cpu = (threads)/2
 
     command <<<
@@ -37,11 +37,6 @@ task mobster {
         else
             echo "false" > $WDL_ROOT/exists.txt
         fi
-
-        echo "DEBUG: SHOULD BE IN LANDING DIRECTORY"
-        cd $WDL_ROOT
-        ls
-
         >>>
 
     output {
