@@ -45,7 +45,7 @@ task deepMei {
 
     cd ..
     # run deepMEI
-    /root/DeepMEI/DeepMEI -i ~{bam} -r "$referenceFasta" -w "$(pwd)" -o "$sample"
+    /root/DeepMEI/DeepMEI -i ~{bam} -r "$referenceFasta" -w "$(pwd)" -o "$sample" -p ~{threads} 
 
     OUTDIR=$(pwd)/DeepMEI_output/${sample}
     VCF_FILE="${OUTDIR}/${sample}.vcf"

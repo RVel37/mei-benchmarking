@@ -9,7 +9,7 @@ task mobster {
     }
 
     # dynamic instance
-    Int disk_gb = ceil( 2* (size(bam, "GiB"))) + 2
+    Int disk_gb = ceil( 2.5* (size(bam, "GiB"))) + 10
     String mem = "32 GB"
     Int threads = 16
     Int cpu = (threads)/2
@@ -61,8 +61,8 @@ task mobVcf {
     }
 
     # dynamic instance
-    Int disk_gb = 4
-    String mem = "8 GB"
+    Int disk_gb = 8
+    String mem = "4 GB"
     Int threads = 8
     Int cpu = (threads)/2
 

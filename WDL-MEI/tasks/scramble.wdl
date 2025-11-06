@@ -10,8 +10,8 @@ task scramble {
 
   # dynamic instance
   Int disk_gb = ceil( 2* (size(bam, "GiB") + size(refGenomeBwaTar, "GiB")) ) + 2
-  String mem = "32 GB"
-  Int threads = 8
+  String mem = "64 GB"
+  Int threads = 16
   Int cpu = (threads)/2
 
   command <<<
@@ -22,7 +22,7 @@ task scramble {
     referenceFasta=$(ls ref/*.fasta | head -n1)
 
     ### Step 1: create BLAST db
-    makeblastdb -in ref/"$referenceFasta" -dbtype nucl -parse_seqids -out ref/"$referenceFasta"
+    makeblastdb -in "$referenceFasta" -dbtype nucl -parse_seqids -out "$referenceFasta"
     # creates basename.nhr, nin, nsq
 
     ### Step 2: Run clustering on the input BAM file
@@ -35,7 +35,8 @@ task scramble {
       --install-dir /scramble/cluster_analysis/bin \
       --mei-refs /scramble/cluster_analysis/resources/MEI_consensus_seqs.fa \
       --ref "$referenceFasta" \
-      --eval-meis 
+      --poly-a-frac 0.5 --poly-a-dist 200 \
+      --eval-meis
 
     ls 
        

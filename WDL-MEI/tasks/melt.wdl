@@ -9,7 +9,7 @@ task melt {
   }
 
   # dynamic instance
-  Int disk_gb = ceil( 2* (size(bam, "GiB") + size(refGenomeBwaTar, "GiB")) ) + 2
+  Int disk_gb = ceil( 2* (size(bam, "GiB") + size(refGenomeBwaTar, "GiB")) )
   String mem = "32 GB"
   Int threads = 16
   Int cpu = (threads)/2
