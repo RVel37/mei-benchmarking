@@ -25,20 +25,19 @@ task melt {
 
 # make mei reference list 
 cat > melt_ref/mei_list.txt <<EOF
-/MELT/MELTv2.0.5_patch/me_refs/Hg38/ALU_MELT.zip
-/MELT/MELTv2.0.5_patch/me_refs/Hg38/LINE1_MELT.zip
-/MELT/MELTv2.0.5_patch/me_refs/Hg38/SVA_MELT.zip
+/MELT/MELTv2.2.2/me_refs/Hg38/ALU_MELT.zip
+/MELT/MELTv2.2.2/me_refs/Hg38/LINE1_MELT.zip
+/MELT/MELTv2.2.2/me_refs/Hg38/SVA_MELT.zip
 EOF
 
     cat melt_ref/mei_list.txt
 
-    java -jar /MELT/MELTv2.0.5_patch/MELT.jar Single \
+    java -jar MELT Single \
       -bamfile ~{bam} \
       -h "$referenceFasta" \
       -t melt_ref/mei_list.txt \
       -w $(pwd) \
-      -n /MELT/MELTv2.0.5_patch/add_bed_files/Hg38/Hg38.genes.bed \
-      -c 8 
+      -n /MELT/MELTv2.2.2/add_bed_files/Hg38/Hg38.genes.bed
 
       # rename outputs
       mv ALU.final_comp.vcf ~{basename(bam, '.bam')}.ALU.final_comp.vcf
