@@ -82,21 +82,26 @@ task melt_preprocess {
 
   command <<<
 
-  $basename={basename(bam, '.bam')}
+  basename="~{basename(bam, ".bam")}"
 
+  # sort by query name (fixmate prerequisite)
   samtools sort -n \
     -@ ~{threads} \
-    -m qsorted_"$basename".bam \
+    -o "${basename}.qsorted.bam" \
     ~{bam}
-    
 
+  # fixmate
   samtools fixmate \
     -@ ~{threads} \
-    -m qsorted_"$basename".bam \
-    fixmate_"$basename".bam 
-
-
+    -m \
+    "${basename}.qsorted.bam" \
+    "${basename}.fixmate.bam"
   >>>
+
+  output {
+    File qsorted_bam = "~{basename(bam, '.bam')}.qsorted.bam"
+    File fixmate_bam = "~{basename(bam, '.bam')}.fixmate.bam"
+  }
 
   runtime {
         docker: "${dockerSamtools}"
