@@ -3,7 +3,6 @@ version 1.0
 task melt {
   input {
     File bam
-    File bai
     File refGenomeBwaTar
     String dockerMelt
   }
@@ -68,16 +67,17 @@ EOF
 ###################################
 
 
-task preprocess {
+task melt_preprocess {
   input {
     File bam
-    String dockerSamtools
+    File refGenomeBwaTar
+    String dockerMelt
   }
 
   # dynamic instance
-  Int disk_gb = ceil( 4* (size(bam, "GiB")) )
-  String mem = "32 GB"
-  Int threads = 32
+  Int disk_gb = ceil( 4* (size(bam, "GiB") + size(refGenomeBwaTar, "GiB")) )
+  String mem = "16 GB"
+  Int threads = 8
   Int cpu = (threads)/2
 
   command <<<
@@ -96,20 +96,11 @@ task preprocess {
     -m \
     "${basename}.qsorted.bam" \
     "${basename}.fixmate.bam"
-
-  # back to coord-sorted
-  samtools sort \
-  -@ ~{threads} \
-  -o "${basename}.fixmate.coord.bam" \
-  "${basename}.fixmate.bam"
-
-  samtools index "${basename}.fixmate.coord.bam"
-
   >>>
 
   output {
-    File fixmate_bam = "~{basename(bam, '.bam')}.fixmate.coord.bam"
-    File fixmate_bai = "~{basename(bam, '.bam')}.fixmate.coord.bam.bai"
+    File qsorted_bam = "~{basename(bam, '.bam')}.qsorted.bam"
+    File fixmate_bam = "~{basename(bam, '.bam')}.fixmate.bam"
   }
 
   runtime {
