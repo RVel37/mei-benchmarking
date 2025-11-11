@@ -37,13 +37,15 @@ workflow main {
         # }
 
         call melt.preprocess as melt_fixmate {
+            input:
             bam=input_bam,
             dockerSamtools=dockerSamtools
         }
 
         call melt.melt {
             input:
-            bam=melt_fixmate.bam,
+            bam=melt_fixmate.fixmate_bam,
+            bai=melt_fixmate.fixmate_bai,
             refGenomeBwaTar=refGenomeBwaTar,
             dockerMelt=dockerMelt
         }
