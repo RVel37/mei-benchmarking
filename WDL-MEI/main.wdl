@@ -36,10 +36,16 @@ workflow main {
             dockerScramble=dockerScramble
         }
 
+        call melt.preprocess as melt_fixmate {
+            input:
+            bam=input_bam,
+            dockerSamtools=dockerSamtools
+        }
+
         call melt.melt {
             input:
-            bam=pb.paired_bam, 
-            bai=pb.bai,
+            bam=melt_fixmate.fixmate_bam,
+            bai=melt_fixmate.fixmate_bai,
             refGenomeBwaTar=refGenomeBwaTar,
             dockerMelt=dockerMelt
         }
@@ -60,7 +66,7 @@ workflow main {
             mobsterProperties=mobsterProperties
         }
 
-        # if mobster produces an output
+        if mobster produces an output
         if (mob.txt_exists) {
             call mobster.mobVcf {
                 input:
@@ -77,6 +83,7 @@ workflow main {
         Array[File?] melt_alu_vcfs = melt.alu_vcf
         Array[File?] melt_line1_vcfs = melt.line1_vcf
         Array[File?] melt_sva_vcfs = melt.sva_vcf
+        Array[File?] melt_hervk_vcfs = melt.hervk_vcf
         Array[File?] deepmei_vcfs = deepMei.vcf
         Array[File?] mobster_txts = mob.txt
         Array[File?] mobster_vcfs = mobVcf.vcf
