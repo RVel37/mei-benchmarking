@@ -21,69 +21,71 @@ workflow main {
     }
 
     scatter (input_bam in bams) {
-        # call pairBamIdxs.pairBamIdxs as pb {
-        #     input:
-        #     bam=input_bam,
-        #     bais=bais,
-        #     dockerSamtools=dockerSamtools
-        # }
+        call pairBamIdxs.pairBamIdxs as pb {
+            input:
+            bam=input_bam,
+            bais=bais,
+            dockerSamtools=dockerSamtools
+        }
 
-        # call scramble.scramble {
-        #     input:
-        #     bam=pb.paired_bam, 
-        #     bai=pb.bai,
-        #     refGenomeBwaTar=refGenomeBwaTar,
-        #     dockerScramble=dockerScramble
-        # }
+        call scramble.scramble {
+            input:
+            bam=pb.paired_bam, 
+            bai=pb.bai,
+            refGenomeBwaTar=refGenomeBwaTar,
+            dockerScramble=dockerScramble
+        }
 
         call melt.preprocess as melt_fixmate {
+            input:
             bam=input_bam,
             dockerSamtools=dockerSamtools
         }
 
         call melt.melt {
             input:
-            bam=melt_fixmate.bam,
+            bam=melt_fixmate.fixmate_bam,
+            bai=melt_fixmate.fixmate_bai,
             refGenomeBwaTar=refGenomeBwaTar,
             dockerMelt=dockerMelt
         }
 
-        # call deepMei.deepMei {
-        #     input:
-        #     bam=pb.paired_bam, 
-        #     bai=pb.bai,
-        #     refGenomeBwaTar=refGenomeBwaTar,
-        #     dockerDeepMei=dockerDeepMei
-        # }
+        call deepMei.deepMei {
+            input:
+            bam=pb.paired_bam, 
+            bai=pb.bai,
+            refGenomeBwaTar=refGenomeBwaTar,
+            dockerDeepMei=dockerDeepMei
+        }
 
-        # call mobster.mobster as mob {
-        #     input:
-        #     bam=pb.paired_bam,
-        #     bai=pb.bai,
-        #     dockerMobster=dockerMobster
-        #     mobsterProperties=mobsterProperties
-        # }
+        call mobster.mobster as mob {
+            input:
+            bam=pb.paired_bam,
+            bai=pb.bai,
+            dockerMobster=dockerMobster
+            mobsterProperties=mobsterProperties
+        }
 
-        # if mobster produces an output
-        # if (mob.txt_exists) {
-        #     call mobster.mobVcf {
-        #         input:
-        #         txt=mob.txt
-        #         dockerMobVcf=dockerMobVcf
-        #     }
-        # }
+        if mobster produces an output
+        if (mob.txt_exists) {
+            call mobster.mobVcf {
+                input:
+                txt=mob.txt
+                dockerMobVcf=dockerMobVcf
+            }
+        }
 
     }
 
     output {
-        # Array[File?] scramble_vcfs = scramble.vcf
-        # Array[File?] scramble_clusters = scramble.clusters
+        Array[File?] scramble_vcfs = scramble.vcf
+        Array[File?] scramble_clusters = scramble.clusters
         Array[File?] melt_alu_vcfs = melt.alu_vcf
         Array[File?] melt_line1_vcfs = melt.line1_vcf
         Array[File?] melt_sva_vcfs = melt.sva_vcf
         Array[File?] melt_hervk_vcfs = melt.hervk_vcf
-        # Array[File?] deepmei_vcfs = deepMei.vcf
-        # Array[File?] mobster_txts = mob.txt
-        # Array[File?] mobster_vcfs = mobVcf.vcf
+        Array[File?] deepmei_vcfs = deepMei.vcf
+        Array[File?] mobster_txts = mob.txt
+        Array[File?] mobster_vcfs = mobVcf.vcf
     }
 }
